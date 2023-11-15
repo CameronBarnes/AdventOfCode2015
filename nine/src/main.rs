@@ -34,7 +34,7 @@ impl Location {
         &self,
         mut unused: [bool; MAX_SIZE],
         list: &[Location],
-        ord: Target,
+        _ord: Target,
     ) -> (Vec<usize>, usize) {
         unused[self.index] = false;
         let remaining = unused.iter().filter(|i| **i).count();
@@ -42,7 +42,7 @@ impl Location {
         let mut best: Option<(Vec<usize>, usize)> = None;
         for i in 0..MAX_SIZE {
             if unused[i] {
-                let mut result = list[i].find(unused, list, ord);
+                let mut result = list[i].find(unused, list, _ord);
                 let distance = result.1 + self.list[i];
 
                 if best.is_none() {
@@ -55,6 +55,10 @@ impl Location {
                     }
                 }
             }
+        }
+
+        if remaining > 0 {
+            panic!("Exiting early with non-zero remaining");
         }
 
         best.unwrap_or((vec![self.index], 0))
@@ -115,7 +119,7 @@ fn main() {
 
     // println!("{:?}", map);
 
-    let result = list[0].find([true; MAX_SIZE], &list, Target::LOW);
+    let result = list[5].find([true; MAX_SIZE], &list, Target::LOW);
 
     println!(
         "Shortest possible route: {:?} has distance {:?}",
